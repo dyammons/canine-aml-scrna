@@ -1,5 +1,9 @@
 #!/usr/bin/Rscript
 
+### Analysis note:
+# This has not been run yet, need to get the AML count matices 
+
+
 #load custom functions & packages
 source("/pl/active/CSUClinHeme/users/dylan/repos/scrna-seq/analysis-code/customFunctions_Seuratv5.R")
 
