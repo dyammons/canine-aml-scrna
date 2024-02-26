@@ -1,14 +1,12 @@
 # Canine AML analysis
 Repository containing code assocaited with the analysis of canine AML dataset.
 
-<br>
-
 ## Guidelines
-- Create an aptly named branch
 - Branches will be named scripts-initals (i.e. scripts-da | scripts-ah) unless this does not work well
-- Work on the analysis then submit a pull request when you are ready to merge with main
-- Do not commit directly to main (exception would be correcting typos etc)
+- Work on the analysis then submit a pull request when you are ready to merge with main (don't worry about this yet)
+- Do not commit directly to main (exception would be correcting typos etc; don't worry about this yet)
 
+<br>
 
 ## File structure:
 - [:file\_folder: metaData](/metaData) contains relevant metadata files including cell type annotations and alternate sample names for analysis
@@ -35,6 +33,8 @@ cd scripts-ah/
 git checkout -b ah
 ```
 
+<br>
+
 ## Using the singularity contianer
 To run an interactive R session:
 ```sh
@@ -45,9 +45,6 @@ To submit a job that runs a R script:
 ```sh
 singularity exec -B $PWD/../../../ --fakeroot ../software/r4.3.2-seuratv5_v2 Rscript script.R #change script.R to name of script to run
 ```
-
-
-Idea is to clone this repo, pull down singularity container, then run the code!
 
 <br>
 
