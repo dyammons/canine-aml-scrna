@@ -26,7 +26,7 @@ git clone https://github.com/dyammons/canine-aml-scrna.git
 #rename the repository
 mv canine-aml-scrna scripts-ah
 
-#enter repo and run/edit scripts
+#enter repo
 cd scripts-ah/
 
 #create your own branch to work on!
