@@ -3,15 +3,13 @@
 #load custom functions & packages
 source("/pl/active/CSUClinHeme/users/dylan/repos/scrna-seq/analysis-code/customFunctions_Seuratv5.R")
 
-#load in processed data from https://doi.org/10.1158/2159-8290.CD-22-1297
-seu.obj <- readRDS("../external_data/ssp_mlsc_final.Rds")
-seu.obj[["RNA"]] <- as(object = seu.obj[["RNA"]], Class = "Assay5")
-seu.obj$orig.ident <- seu.obj$sample
+#load in processed data from https://doi.org/10.1158/2159-8290.CD-22-1297 -- reprocessed
+seu.obj <- readRDS("../output/s3/ssp_mlsc_res0.6_dims45_dist0.1_neigh10_S3.rds")
 outName <- "human_k9_comp"
 
 #inspect data for proper import -- looks good
 pi <- DimPlot(seu.obj, 
-              reduction = "umap", 
+              reduction = "umap.integrated", 
               group.by = "scArches_Cluster",
               pt.size = 0.1,
               label = T,
@@ -23,32 +21,34 @@ ggsave(paste0("../output/", outName, "/", outName, "_scArches_UMAP.png"), width 
 
 
 #plot m-LSC score
-p <- FeaturePlot(seu.obj, features = "m-LSC score", reduction = "umap") 
+p <- FeaturePlot(seu.obj, features = "m.LSC.score", reduction = "umap.integrated") 
 p <- formatUMAP(p) + NoLegend()
 ggsave(paste0("../output/", outName, "/", outName, "_mLSC_score_UMAP.png"), width = 7, height = 7)
 
 
 #plot m-LSC score by cluster
-VlnPlot(seu.obj, features = c("m-LSC score","p-LSC score"), group.by = "scArches_Cluster", stack = T, flip = T, fill.by = "ident")
+VlnPlot(seu.obj, features = c("m.LSC.score","p.LSC.score","CD276"), group.by = "scArches_Cluster", stack = T, flip = T, fill.by = "ident")
 ggsave(paste0("../output/", outName, "/", outName, "_mLSC_score_viln.png"), width = 7, height = 5)
+
+### Key feature plots
+features <- c("PTPRC","CD3E","ANPEP", 
+                "DLA-DRA","CSF3R","S100A12", 
+                "CD68","FLT3","FCER1A", 
+                "EPCAM","COL1A1","CD34",
+                "COL1A2","MS4A1","TOP2A")
+p <- prettyFeats(seu.obj = seu.obj, nrow = 5, ncol = 3, title.size = 14, features = features, order = F, legJust = "top", reduction = "umap.integrated") 
+ggsave(paste0("../output/", outName, "/", outName, "_featPlots.png"), width = 9, height = 15)
+
+### Key feature plots
+features <- c("CD276")
+p <- prettyFeats(seu.obj = seu.obj, nrow = 1, ncol = 1, title.size = 14, features = features, order = T, legJust = "top", reduction = "umap.integrated") 
+ggsave(paste0("../output/", outName, "/", outName, "_featPlots.png"), width = 4, height = 4)
 
 
 ### Integrate cross-species
 
 #read in processed k9 data
-seu.obj.k9 <- readRDS("../output/s3/outputcombined_BM_CD34_AML_res0.6_dims50_S3.rds")
-cnts <- seu.obj.k9@assays$RNA$counts
-cnts <- orthogene::convert_orthologs(gene_df = cnts,
-                                        gene_input = "rownames", 
-                                        gene_output = "rownames", 
-                                        input_species = "dog",
-                                        output_species = "human",
-                                        non121_strategy = "drop_both_species") 
-rownames(cnts) <- unname(rownames(cnts))
-seu.obj.k9 <- CreateSeuratObject(cnts, project = "humanConvert", assay = "RNA",
-                                  min.cells = 0, min.features = 0, names.field = 1,
-                                  names.delim = "_", meta.data = seu.obj.k9@meta.data)
-
+seu.obj.k9 <- readRDS("../output/s3/can_aml_res0.6_dims45_dist0.1_neigh10_S3.rds")
 
 #split then merge objects
 message(paste0(Sys.time(), " INFO: splitting data from k9 and human."))

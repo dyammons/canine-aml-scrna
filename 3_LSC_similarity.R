@@ -14,6 +14,17 @@ outName <- human_k9_comp
 
 ### Example code to get you started (probs dont't wanna change above this line) ###
 
+#plot b7-h3
+features <- c("CD276")
+p1 <- prettyFeats(seu.obj = seu.obj.hu, nrow = 1, ncol = 1, title.size = 14, features = features, 
+                  order = T, legJust = "top", reduction = "umap.integrated", noLegend = T) 
+ggsave(paste0("../output/", outName, "/", outName, "_hu_b7h3_featPlots.png"), width = 4, height = 4)
+
+p2 <- prettyFeats(seu.obj = seu.obj.k9, nrow = 1, ncol = 1, title.size = 14, features = features, 
+                  order = T, legJust = "top", reduction = "umap.integrated", noLegend = T)
+ggsave(paste0("../output/", outName, "/", outName, "_can_b7h3_featPlots.png"), width = 4, height = 4)
+
+
 #calculate defining features of each canine cluster
 vilnPlots(seu.obj = seu.obj.k9, inFile = NULL, groupBy = "celltype.l2", numOfFeats = 24, outName = "canine",
                       outDir = "../output/viln/", outputGeneList = T, filterOutFeats = c("^MT-", "^RPL", "^RPS"), assay = "RNA", 
